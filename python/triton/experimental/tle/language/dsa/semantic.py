@@ -358,9 +358,9 @@ def tile_concat(lhs: tl.tensor, rhs: tl.tensor, dim: int, builder: ir.builder) -
     if not isinstance(rhs, tl.tensor):
         raise TypeError("rhs must be a tensor")
 
-    # Verify dimensions match except for concat dimension
-    lhs_shape = list(lhs.shape) if isinstance(lhs.shape, (tuple, list)) else [lhs.shape]
-    rhs_shape = list(rhs.shape) if isinstance(rhs.shape, (tuple, list)) else [rhs.shape]
+    # Unwrap shapes first to handle constexpr correctly
+    lhs_shape = list(tl._unwrap_shape(lhs.shape))
+    rhs_shape = list(tl._unwrap_shape(rhs.shape))
 
     if len(lhs_shape) != len(rhs_shape):
         raise ValueError(f"Cannot concat tensors with different ranks: {len(lhs_shape)} vs {len(rhs_shape)}")
